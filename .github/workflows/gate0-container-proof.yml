@@ -1,0 +1,49 @@
+name: Gate 0 container proof
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: savs-webmcp-gate0-container-proof
+  cancel-in-progress: false
+
+jobs:
+  prove-container:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out the exact private revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Select Node.js 20
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check bounded source and workflow contracts
+        run: npm run check:format && npm run check:boundary
+
+      - name: Install host-side Chromium verifier
+        run: npx playwright install --with-deps chromium
+
+      - name: Build, run, measure, and stop the candidate image
+        run: npm run proof:container
+
+      - name: Upload the bounded receipt when present
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: gate0-container-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/gate0-container-proof/receipt.json
+          if-no-files-found: ignore
+          retention-days: 1
+          compression-level: 9

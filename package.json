@@ -14,9 +14,11 @@
     "test:unit": "node --test --test-concurrency=1 tests/store.test.mjs tests/png.test.mjs tests/reference-diff.test.mjs",
     "test:server": "node --test --test-concurrency=1 tests/server.test.mjs",
     "test:e2e": "node --test --test-concurrency=1 tests/e2e.test.mjs",
-    "check:format": "node --check server.mjs && node --check lib/stable-json.mjs && node --check lib/store.mjs && node --check verifier/png.mjs && node --check verifier/reference-diff.mjs && node --check verifier/controlled-renderer.mjs && node --check app/app.js && node --check scripts/check-boundary.mjs && node --check scripts/test-webmcp-compatibility.mjs && node --check scripts/generate-local-proof.mjs",
+    "check:format": "node --check server.mjs && node --check lib/stable-json.mjs && node --check lib/store.mjs && node --check verifier/png.mjs && node --check verifier/reference-diff.mjs && node --check verifier/controlled-renderer.mjs && node --check app/app.js && node --check scripts/check-boundary.mjs && node --check scripts/test-webmcp-compatibility.mjs && node --check scripts/generate-local-proof.mjs && node --check scripts/verify-deployment.mjs && node --check scripts/run-gate0-container-proof.mjs",
     "check:boundary": "node scripts/check-boundary.mjs",
     "check:webmcp": "node scripts/test-webmcp-compatibility.mjs",
+    "verify:deployment": "node scripts/verify-deployment.mjs",
+    "proof:container": "node scripts/run-gate0-container-proof.mjs",
     "prove": "node scripts/generate-local-proof.mjs",
     "verify": "npm run check:format && npm run check:boundary && npm test && npm run check:webmcp && npm run prove"
   },

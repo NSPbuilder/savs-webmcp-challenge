@@ -1,4 +1,4 @@
-const SESSION_ID = 'challenge';
+const SESSION_ID = crypto.randomUUID();
 const state = { application: null, audit: null, blinking: false };
 
 const elements = {
@@ -163,7 +163,7 @@ async function compact(args = {}) {
   const receipt = await api('/api/actions/compact', {
     method: 'POST',
     body: {
-      sessionId: args.sessionId || SESSION_ID,
+      sessionId: SESSION_ID,
       idempotencyKey: args.idempotencyKey || key('compact'),
     },
   });
@@ -178,7 +178,7 @@ async function audit(args = {}) {
   const receipt = await api('/api/audits', {
     method: 'POST',
     body: {
-      sessionId: args.sessionId || SESSION_ID,
+      sessionId: SESSION_ID,
       revisionId,
       auditId: args.auditId || key('audit'),
     },
@@ -194,7 +194,7 @@ async function repair(args = {}) {
   const receipt = await api('/api/actions/repair', {
     method: 'POST',
     body: {
-      sessionId: args.sessionId || SESSION_ID,
+      sessionId: SESSION_ID,
       idempotencyKey: args.idempotencyKey || key('repair'),
       expectedRevisionId,
       token: 'metric-baseline-offset',

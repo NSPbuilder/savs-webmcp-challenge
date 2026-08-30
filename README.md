@@ -34,8 +34,30 @@ Chrome run of the current `document.modelContext.registerTool/getTools/executeTo
 WebMCP test feature enabled, and generation of an image-rich local proof report at
 `artifacts/local-proof/index.html`.
 
+## Private CI container Gate 0
+
+The candidate image is pinned to the Playwright 1.62.1 Noble multi-platform index and contains only
+the package manifests plus `app`, `lib`, `verifier`, and `server.mjs`. Gate 0 runs only when a
+maintainer manually dispatches the private `Gate 0 container proof` workflow on `main`; it is not a
+push, pull-request, scheduled, deployment, registry, or publication workflow.
+
+```sh
+gh workflow run gate0-container-proof.yml --ref main
+```
+
+The standard Ubuntu job builds the exact Dockerfile, runs the candidate container, invokes
+`verify:deployment` through its mapped origin, measures the observed image/runtime, audit latency and
+cgroup peak memory, checks that Chromium closes, then stops and removes the container. Its only
+upload candidate is a source-bound `receipt.json` capped at 1 MiB and retained for one day.
+
+`verify:deployment` checks two independent page sessions, the complete R1 BLOCK → stale → R2 PASS
+chain, PNG evidence, two concurrently issued audits, and the visible controls without WebMCP. A CI
+receipt proves only that exact private commit and runner; the later public HTTPS origin must pass the
+same verifier independently.
+
 ## Current boundary
 
 This repository is private and `UNLICENSED` while it is under review. It is not yet a hosted demo,
 public Challenge entry, ChatGPT in-app-browser result, video, or submission. It contains no runtime
-import from the private `nsp-savs` project.
+import from the private `nsp-savs` project. The candidate container definition and manual workflow
+are present, but Gate 0 remains pending until the real private Linux receipt passes.

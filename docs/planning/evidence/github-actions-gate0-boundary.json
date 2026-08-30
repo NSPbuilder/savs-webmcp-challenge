@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-30T15:24:09Z",
+  "repository": {
+    "nameWithOwner": "NSPbuilder/savs-webmcp-challenge",
+    "visibility": "private",
+    "private": true,
+    "defaultBranch": "main",
+    "archived": false,
+    "disabled": false,
+    "baselineCommit": "ea86af67d9b073003e15076b730c664b7c77cbda"
+  },
+  "actions": {
+    "enabled": true,
+    "allowedActions": "all",
+    "shaPinningRequiredByRepository": false,
+    "workflowPolicyForThisRevision": "Pin every referenced action to an exact commit SHA and grant contents:read only."
+  },
+  "actionPins": {
+    "actions/checkout@v4": "11d5960a326750d5838078e36cf38b85af677262",
+    "actions/setup-node@v4": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+    "actions/upload-artifact@v4": "ea165f8d65b6e75b540449e92b4886f43607fa02"
+  },
+  "billingBoundary": {
+    "accountPlanFromCurrentToken": null,
+    "actionsUsageEndpoint": "unavailable because the active GitHub token lacks the user scope",
+    "authorizedBehavior": "Do not change billing, add a payment method, raise a budget, select a paid runner, or retry after any terminal workflow attempt without new user authorization.",
+    "triggerPrerequisite": "Before workflow_dispatch, prove at least 30 included Linux minutes and 10 MiB artifact headroom remain, or prove account controls block all paid overage. If neither can be verified, stop for user direction.",
+    "artifactCeiling": "The workflow may upload only artifacts/gate0-container-proof/receipt.json. The runner must cap each captured log field at 65,536 UTF-8 bytes and the complete serialized receipt at 1,048,576 bytes; an over-limit receipt must not be uploaded."
+  },
+  "localRuntime": {
+    "docker": "missing",
+    "podman": "missing",
+    "nerdctl": "missing",
+    "colima": "missing"
+  }
+}

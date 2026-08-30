@@ -118,6 +118,58 @@ test('top-level imperative WebMCP tools execute the complete visual flow', { tim
   assert.ok(Math.abs(imageRender.naturalRatio - (19 / 6)) < 0.001);
 });
 
+test('independent browser contexts cannot observe or reset each other', { timeout: 30_000 }, async (t) => {
+  const server = await startServer();
+  const browser = await chromium.launch({ headless: true });
+  t.after(async () => {
+    await browser.close();
+    await server.close();
+  });
+  const [contextA, contextB] = await Promise.all([
+    contextWithWebMcp(browser, { width: 1280, height: 720 }),
+    contextWithWebMcp(browser, { width: 1280, height: 720 }),
+  ]);
+  const [pageA, pageB] = await Promise.all([contextA.newPage(), contextB.newPage()]);
+  await Promise.all([
+    pageA.goto(server.origin, { waitUntil: 'networkidle' }),
+    pageB.goto(server.origin, { waitUntil: 'networkidle' }),
+  ]);
+  await Promise.all([
+    pageA.getByText('4 WebMCP tools available').waitFor(),
+    pageB.getByText('4 WebMCP tools available').waitFor(),
+  ]);
+
+  const [initialA, initialB] = await Promise.all([
+    execute(pageA, 'get_visual_state', {}),
+    execute(pageB, 'get_visual_state', {}),
+  ]);
+  const stateA = JSON.parse(initialA.content[0].text).application;
+  const stateB = JSON.parse(initialB.content[0].text).application;
+  assert.notEqual(stateA.sessionId, stateB.sessionId);
+  assert.equal(stateA.currentRevisionId, 'R0');
+  assert.equal(stateB.currentRevisionId, 'R0');
+
+  await execute(pageA, 'apply_compact_layout', { idempotencyKey: 'isolated-a-compact' });
+  const untouchedB = JSON.parse(
+    (await execute(pageB, 'get_visual_state', {})).content[0].text,
+  ).application;
+  assert.equal(untouchedB.currentRevisionId, 'R0');
+  assert.equal(await pageA.locator('[data-current-revision]').textContent(), 'R1');
+  assert.equal(await pageB.locator('[data-current-revision]').textContent(), 'R0');
+
+  await execute(pageB, 'apply_compact_layout', { idempotencyKey: 'isolated-b-compact' });
+  await pageB.locator('[data-action="reset"]').click();
+  await pageB.getByText('Reset complete.').waitFor();
+  const [afterResetA, afterResetB] = await Promise.all([
+    execute(pageA, 'get_visual_state', {}),
+    execute(pageB, 'get_visual_state', {}),
+  ]);
+  assert.equal(JSON.parse(afterResetA.content[0].text).application.currentRevisionId, 'R1');
+  assert.equal(JSON.parse(afterResetB.content[0].text).application.currentRevisionId, 'R0');
+  assert.equal(await pageA.locator('[data-current-revision]').textContent(), 'R1');
+  assert.equal(await pageB.locator('[data-current-revision]').textContent(), 'R0');
+});
+
 test('visible controls remain available without WebMCP at desktop and mobile widths', { timeout: 30_000 }, async (t) => {
   const server = await startServer();
   const browser = await chromium.launch({ headless: true });

@@ -1,0 +1,12 @@
+.git
+.gitignore
+.nsp
+node_modules
+artifacts
+docs
+tests
+scripts
+dist
+test-results
+.DS_Store
+*.log

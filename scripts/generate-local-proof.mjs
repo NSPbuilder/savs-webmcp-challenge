@@ -12,7 +12,10 @@ import { sha256 } from '../verifier/png.mjs';
 const ROOT = dirname(fileURLToPath(new URL('../package.json', import.meta.url)));
 const OUTPUT = join(ROOT, 'artifacts', 'local-proof');
 const SOURCE_FILES = [
+  '.dockerignore',
+  '.github/workflows/gate0-container-proof.yml',
   '.gitignore',
+  'Dockerfile',
   'README.md',
   'app/app.js',
   'app/index.html',
@@ -23,7 +26,9 @@ const SOURCE_FILES = [
   'package.json',
   'scripts/check-boundary.mjs',
   'scripts/generate-local-proof.mjs',
+  'scripts/run-gate0-container-proof.mjs',
   'scripts/test-webmcp-compatibility.mjs',
+  'scripts/verify-deployment.mjs',
   'server.mjs',
   'tests/e2e.test.mjs',
   'tests/png.test.mjs',

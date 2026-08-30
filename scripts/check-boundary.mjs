@@ -4,9 +4,16 @@ import { extname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const SOURCE_ROOTS = ['app', 'lib', 'scripts', 'tests', 'verifier'];
-const SOURCE_FILES = ['server.mjs', 'package.json', 'README.md', '.gitignore'];
-const TEXT_EXTENSIONS = new Set(['.js', '.mjs', '.json', '.md', '.css', '.html']);
+const SOURCE_ROOTS = ['.github/workflows', 'app', 'lib', 'scripts', 'tests', 'verifier'];
+const SOURCE_FILES = [
+  'server.mjs',
+  'package.json',
+  'README.md',
+  '.gitignore',
+  'Dockerfile',
+  '.dockerignore',
+];
+const TEXT_EXTENSIONS = new Set(['.js', '.mjs', '.json', '.md', '.css', '.html', '.yml']);
 const privateProject = ['nsp', 'savs'].join('-');
 const privateCore = ['nsp', 'core'].join('_');
 const staticImportPattern = new RegExp(
@@ -55,6 +62,66 @@ assert.equal(packageValue.private, true, 'package must remain private');
 assert.equal(packageValue.license, 'UNLICENSED', 'license must remain UNLICENSED');
 assert.deepEqual(Object.keys(packageValue.dependencies || {}), ['playwright']);
 assert.equal(packageValue.dependencies.playwright, '1.62.1');
+
+const dockerfile = await readFile(join(ROOT, 'Dockerfile'), 'utf8');
+assert.match(
+  dockerfile,
+  /^FROM mcr\.microsoft\.com\/playwright:v1\.62\.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e$/m,
+);
+assert.ok(!dockerfile.includes('COPY . .'), 'container must use an explicit runtime allowlist');
+for (const instruction of [
+  'COPY package.json package-lock.json ./',
+  'RUN npm ci --omit=dev',
+  'COPY app ./app',
+  'COPY lib ./lib',
+  'COPY verifier ./verifier',
+  'COPY server.mjs ./',
+  'CMD ["npm", "start"]',
+]) assert.ok(dockerfile.includes(instruction), `Dockerfile missing: ${instruction}`);
+
+const dockerIgnore = new Set((await readFile(join(ROOT, '.dockerignore'), 'utf8')).split('\n'));
+for (const excluded of ['.git', '.nsp', 'node_modules', 'artifacts', 'docs', 'tests', 'scripts']) {
+  assert.ok(dockerIgnore.has(excluded), `.dockerignore missing ${excluded}`);
+}
+
+const workflow = await readFile(
+  join(ROOT, '.github', 'workflows', 'gate0-container-proof.yml'),
+  'utf8',
+);
+assert.match(workflow, /^on:\n  workflow_dispatch:\n/m);
+assert.doesNotMatch(workflow, /^\s*(?:push|pull_request|schedule):/m);
+assert.match(workflow, /^permissions:\n  contents: read\n/m);
+assert.match(workflow, /^    runs-on: ubuntu-24\.04$/m);
+assert.match(workflow, /^    timeout-minutes: 30$/m);
+assert.match(workflow, /^          persist-credentials: false$/m);
+assert.match(workflow, /^          path: artifacts\/gate0-container-proof\/receipt\.json$/m);
+assert.match(workflow, /^          if-no-files-found: ignore$/m);
+assert.match(workflow, /^          retention-days: 1$/m);
+for (const action of [
+  'actions/checkout@11d5960a326750d5838078e36cf38b85af677262',
+  'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020',
+  'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02',
+]) assert.ok(workflow.includes(action), `workflow missing exact action pin: ${action}`);
+for (const forbidden of ['docker push', 'ghcr.io', 'actions/cache@', 'secrets.', 'environment:']) {
+  assert.ok(!workflow.includes(forbidden), `workflow contains forbidden surface: ${forbidden}`);
+}
+
+const containerProof = await readFile(
+  join(ROOT, 'scripts', 'run-gate0-container-proof.mjs'),
+  'utf8',
+);
+for (const contract of [
+  'const FIELD_LIMIT_BYTES = 65_536;',
+  'const RECEIPT_LIMIT_BYTES = 1_048_576;',
+  "writeFile(RECEIPT_PATH, bytes, { flag: 'wx' })",
+  "['stop', '--time', '10', CONTAINER_NAME]",
+  'finally {',
+]) assert.ok(containerProof.includes(contract), `container proof missing contract: ${contract}`);
+assert.match(
+  containerProof,
+  /\[\s*'run', '--detach', '--rm', '--init', '--ipc=host'/,
+  'container proof must run with detach/rm/init/ipc host',
+);
 
 if (findings.length > 0) {
   console.error(JSON.stringify({ ok: false, findings }, null, 2));

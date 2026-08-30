@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "fetchedAt": "2026-08-30T14:30:28Z",
+  "source": "https://mcr.microsoft.com/v2/playwright/manifests/v1.62.1-noble",
+  "requestAccept": "application/vnd.oci.image.index.v1+json",
+  "responseStatus": 200,
+  "responseContentType": "application/vnd.oci.image.index.v1+json",
+  "dockerContentDigest": "sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e",
+  "manifest": {
+    "schemaVersion": 2,
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "manifests": [
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "size": 1644,
+        "digest": "sha256:c091b21d9fae78c76e85cd4356431e9b018402f172a214fc7d7a5e9a7e29d8ac",
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      },
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "size": 1644,
+        "digest": "sha256:941cc91e5022880ac1d14ae90b476b624deb6399dbbc28d612d5d5bd7928fcbd",
+        "platform": {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      }
+    ]
+  }
+}
