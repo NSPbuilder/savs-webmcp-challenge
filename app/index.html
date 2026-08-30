@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A WebMCP optical verification bench that binds visual evidence to immutable UI revisions.">
+  <title>SAVS Optical Verification Bench</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="top-rail">
+    <a class="wordmark" href="/" aria-label="SAVS optical verification bench">
+      <span class="registration-mark" aria-hidden="true"></span>
+      <span>SAVS / Optical bench</span>
+    </a>
+    <div class="rail-status">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span data-webmcp-status>Checking WebMCP…</span>
+    </div>
+    <div class="rail-revision">Current <strong data-current-revision>R0</strong></div>
+  </header>
+
+  <main class="bench-shell">
+    <section class="orientation" aria-labelledby="page-title">
+      <p class="eyebrow">Revision-bound visual evidence</p>
+      <h1 id="page-title">The action passed.<br>The pixels still have to.</h1>
+      <p class="orientation-copy">Compact the specimen, inspect the optical result, refuse evidence from the wrong revision, repair one alignment token, then look again.</p>
+    </section>
+
+    <section class="comparison-panel" aria-labelledby="comparison-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Registered raster</p>
+          <h2 id="comparison-title">Reference / current</h2>
+        </div>
+        <button class="mode-button" type="button" data-action="blink" aria-pressed="false" disabled>
+          Blink compare
+        </button>
+      </div>
+
+      <div class="registered-stage" data-stage-state="empty">
+        <iframe class="live-specimen" data-live-specimen title="Current registered specimen"></iframe>
+        <div class="comparison-stack" data-comparison-stack hidden>
+          <img class="reference-layer" data-reference-image alt="Approved reference raster">
+          <img class="current-layer" data-current-image alt="Current revision raster">
+        </div>
+        <div class="empty-stage" data-empty-stage>
+          <span class="crosshair" aria-hidden="true"></span>
+          <p>No raster evidence yet.</p>
+          <small>Run a visual audit to register reference and current pixels.</small>
+        </div>
+      </div>
+
+      <div class="stage-legend" aria-label="Comparison legend">
+        <span><i class="swatch reference"></i> reference</span>
+        <span><i class="swatch current"></i> current</span>
+        <span><i class="swatch difference"></i> changed pixels</span>
+      </div>
+
+      <figure class="diff-strip" data-diff-strip hidden>
+        <figcaption>
+          <span>Difference mask</span>
+          <strong data-diff-caption>—</strong>
+        </figcaption>
+        <img data-diff-image alt="Exact pixel difference mask">
+      </figure>
+    </section>
+
+    <section class="verdict-panel" aria-labelledby="verdict-title" data-verdict="WAITING">
+      <div class="verdict-header">
+        <p class="eyebrow">Fresh audit verdict</p>
+        <h2 id="verdict-title" data-verdict-label>WAITING</h2>
+        <p data-verdict-reason>Apply the compact layout, then inspect its visual result.</p>
+      </div>
+
+      <dl class="measurements" aria-label="Audit measurements">
+        <div>
+          <dt>Changed pixels</dt>
+          <dd class="measurement-value"><span data-changed-pixels>—</span><span> px</span></dd>
+        </div>
+        <div>
+          <dt>Outside targets</dt>
+          <dd class="measurement-value"><span data-outside-pixels>—</span><span> px</span></dd>
+        </div>
+        <div>
+          <dt>Changed targets</dt>
+          <dd class="measurement-value"><span data-target-count>—</span><span> / 2</span></dd>
+        </div>
+        <div>
+          <dt>Stable control</dt>
+          <dd class="measurement-value"><span data-control-pixels>—</span><span> px</span></dd>
+        </div>
+      </dl>
+
+      <div class="evidence-binding">
+        <span>Evidence revision</span>
+        <strong data-evidence-revision>—</strong>
+        <span>Freshness</span>
+        <strong data-freshness>—</strong>
+      </div>
+
+      <div class="action-stack" aria-label="Verification actions">
+        <button class="primary-action" type="button" data-action="compact">1 · Apply compact layout</button>
+        <button type="button" data-action="audit">2 · Run visual audit</button>
+        <button type="button" data-action="repair">3 · Repair alignment token</button>
+        <button type="button" data-action="reset">Reset to R0</button>
+      </div>
+      <p class="action-note" data-action-note aria-live="polite">Ready.</p>
+    </section>
+
+    <section class="revision-trace" aria-labelledby="trace-title">
+      <div class="trace-heading">
+        <p class="eyebrow">Immutable trace</p>
+        <h2 id="trace-title">Action and evidence chronology</h2>
+      </div>
+      <ol data-revision-trace>
+        <li data-state="current"><span>R0</span><strong>Approved reference</strong><small>comfortable layout</small></li>
+      </ol>
+    </section>
+  </main>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

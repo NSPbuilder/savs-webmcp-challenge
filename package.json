@@ -1,0 +1,26 @@
+{
+  "name": "@nspbuilder/savs-webmcp-challenge",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "description": "A self-contained WebMCP reference that proves visual evidence belongs to an exact UI revision.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test --test-concurrency=1",
+    "test:unit": "node --test --test-concurrency=1 tests/store.test.mjs tests/png.test.mjs tests/reference-diff.test.mjs",
+    "test:server": "node --test --test-concurrency=1 tests/server.test.mjs",
+    "test:e2e": "node --test --test-concurrency=1 tests/e2e.test.mjs",
+    "check:format": "node --check server.mjs && node --check lib/stable-json.mjs && node --check lib/store.mjs && node --check verifier/png.mjs && node --check verifier/reference-diff.mjs && node --check verifier/controlled-renderer.mjs && node --check app/app.js && node --check scripts/check-boundary.mjs && node --check scripts/test-webmcp-compatibility.mjs && node --check scripts/generate-local-proof.mjs",
+    "check:boundary": "node scripts/check-boundary.mjs",
+    "check:webmcp": "node scripts/test-webmcp-compatibility.mjs",
+    "prove": "node scripts/generate-local-proof.mjs",
+    "verify": "npm run check:format && npm run check:boundary && npm test && npm run check:webmcp && npm run prove"
+  },
+  "dependencies": {
+    "playwright": "1.62.1"
+  }
+}
