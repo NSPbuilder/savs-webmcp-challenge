@@ -1,8 +1,8 @@
 # Devpost final copy
 
-This is the copy/paste source for the live submission form. Replace the
-remaining repository placeholder only after that repository passes anonymous
-access checks.
+This is the copy/paste source for the live submission form. The live app,
+public source repository, and public YouTube page are bound below; remaining
+human and Devpost gates are tracked in `publication-checklist.md`.
 
 ## Project identity
 

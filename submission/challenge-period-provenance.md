@@ -29,6 +29,5 @@ instructions, and bounded evidence.
 - Public origin: https://savs-webmcp-challenge.onrender.com.
 - Public accepted demo: https://youtu.be/quJI1JD3FzE.
 
-Before submission, the entrant must confirm that the public repository history
-or an equivalent visible dated record supports this boundary. This document
-does not convert a private repository into public provenance by itself.
+The public repository history and exact source revisions must remain visible
+through judging so this boundary stays independently inspectable.
