@@ -56,7 +56,7 @@ The bounded completion audit records:
 
 ### Safe now
 
-- “The exact private Gate 0 commit passed on a GitHub-hosted Linux runner.”
+- “The exact Gate 0 commit passed on a GitHub-hosted Linux runner.”
 - “The page registers four WebMCP tools.”
 - “The frozen proof produced R1 BLOCK, stale R1 BLOCK, and fresh R2 PASS.”
 - “The reference app demonstrates revision-bound visual evidence.”
@@ -65,13 +65,12 @@ The bounded completion audit records:
 - “The exact 157.12-second v4 video export passed complete human H2 review.”
 - “The YouTube video page is publicly visible at
   https://youtu.be/quJI1JD3FzE with the expected title and description.”
-- “The first-party repository source carries a standard MIT license naming
-  NSP AI LABS INC.; repository publication remains a separate gate.”
+- “The source is public and MIT-licensed at
+  https://github.com/NSPbuilder/savs-webmcp-challenge.”
 
 ### Safe only after the corresponding public gate passes
 
 - “The public YouTube transcode has passed complete signed-out playback.”
-- “The source is public and open source at `<PUBLIC_REPOSITORY_URL>`.”
 - “Every required Devpost field is complete.”
 - “The final Devpost entry has been submitted.”
 
@@ -81,8 +80,6 @@ The bounded completion audit records:
 - The 1,667-pixel R1 result is universal across browsers and environments.
 - A stale audit can approve the latest revision.
 - This Challenge workbench is the complete long-range SAVS product.
-- A private MIT-licensed repository satisfies the Challenge's public
-  repository requirement before anonymous access is verified.
 
 ## Environment-sensitive measurements
 
@@ -98,7 +95,6 @@ hosted take must display its own measured count.
 | Provenance | Dated public history or equivalent record separating Challenge WebMCP work from earlier SAVS research |
 | Final live check | Public origin remains available and one final native Chrome tool smoke test passes after all submission URLs are fixed |
 | ChatGPT | Optional additional evidence only if this route is claimed as tested |
-| Public repository | Visible open-source license, complete source/assets/instructions, public access |
 | Video publication | Complete signed-out post-transcode playback of the H2-accepted upload at https://youtu.be/quJI1JD3FzE |
 | Devpost | Read-only live-form inventory mapped to final copy, all required fields completed |
 | Judge access | Free working access maintained through 2026-09-21 17:00 PDT |

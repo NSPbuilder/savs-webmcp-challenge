@@ -28,7 +28,7 @@ prepared material conflicts with this snapshot.
 | New human-agent collaboration | `devpost-final-copy.md` | Prepared |
 | Brief WebMCP implementation explanation | `devpost-final-copy.md` | Prepared from current source and receipts |
 | Public YouTube demo with audio, under three minutes | H2-accepted 157.12-second v4 export at https://youtu.be/quJI1JD3FzE; `youtube-upload-copy.md` | Public page and expected metadata verified; complete signed-out transcode playback pending |
-| Public source repository with code, assets, instructions, and visible open-source license | Local MIT license and metadata; `publication-checklist.md` publication gate | MIT transition prepared locally; private publication, public visibility, anonymous access, and host-side license detection pending |
+| Public source repository with code, assets, instructions, and visible open-source license | https://github.com/NSPbuilder/savs-webmcp-challenge; `publication-checklist.md` | Verified through anonymous GitHub access; GitHub detects the top-level MIT license |
 | Complete every required field in the live Devpost form | `devpost-final-copy.md` plus `publication-checklist.md` live-form inventory gate | Standard copy prepared; unpublished form fields and limits still require inventory |
 
 ## Project and entrant prerequisites

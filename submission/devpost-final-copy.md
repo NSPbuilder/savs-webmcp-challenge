@@ -9,7 +9,7 @@ access checks.
 - **Name:** SAVS: Visual Proof for WebMCP Agents
 - **Tagline:** A successful tool call is not a visual verdict.
 - **Live app:** https://savs-webmcp-challenge.onrender.com
-- **Source code:** `<PUBLIC_REPOSITORY_URL>`
+- **Source code:** https://github.com/NSPbuilder/savs-webmcp-challenge
 - **Demo video:** https://youtu.be/quJI1JD3FzE
 
 ## One-sentence pitch

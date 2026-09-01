@@ -16,21 +16,6 @@ by YouTube's anti-bot sign-in challenge, so one human boundary remains:
 3. Confirm that YouTube does not display a visibility, age, region, copyright,
    or processing restriction.
 
-## MIT license complete locally; public repository pending
-
-The top-level MIT license names **NSP AI LABS INC.**, whose ownership and
-license-holder authorization were explicitly confirmed by the user. Package,
-lockfile, boundary, and README metadata are synchronized locally.
-
-1. Review the repository while it remains private.
-2. Publish the reviewed changes to the private repository.
-3. The entrant manually changes visibility to **Public**.
-4. Open the repository while signed out and confirm that source, assets,
-   setup/run/test instructions, Challenge provenance, and the license are all
-   visible.
-5. Confirm that the repository host detects **MIT** at the top/About area.
-6. Replace `<PUBLIC_REPOSITORY_URL>` only after those anonymous checks pass.
-
 ## Devpost form and submission
 
 1. Open the logged-in submission form and inventory any fields or length

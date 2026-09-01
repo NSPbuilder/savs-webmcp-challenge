@@ -9,7 +9,7 @@
 - **Project title:** SAVS: Visual Proof for WebMCP Agents
 - **Tagline:** A successful tool call is not a visual verdict.
 - **Live app:** https://savs-webmcp-challenge.onrender.com
-- **Source repository:** `<PUBLIC_REPOSITORY_URL>`
+- **Source repository:** https://github.com/NSPbuilder/savs-webmcp-challenge
 - **Demo video:** https://youtu.be/quJI1JD3FzE
 
 ## Short description
@@ -101,7 +101,7 @@ region, and evidence freshness.
 Native Chrome compatibility testing uses the asynchronous
 `document.modelContext.getTools` and `executeTool` path. A separate
 independent-origin test runs the full visible workflow against an HTTP origin.
-The exact private Gate 0 commit also passed on a GitHub-hosted Ubuntu 24 Linux
+The exact Gate 0 commit also passed on a GitHub-hosted Ubuntu 24 Linux
 amd64 runner.
 
 The application server imports Node.js built-ins and local modules. The package
@@ -110,7 +110,7 @@ third-party runtime data service.
 
 ## Evidence from the frozen Gate 0 revision
 
-For exact private commit
+For exact Gate 0 commit
 `fdc78a1c3a083e1fc7557b3375b82a0b964617d1`, the Linux receipt recorded:
 
 - fresh R1: `BLOCK`, 1,667 changed target pixels, zero outside-target pixels,

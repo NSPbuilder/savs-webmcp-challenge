@@ -88,18 +88,19 @@ each route actually claimed.
       and is authorized to appear as the MIT copyright holder.
 - [x] Add the standard top-level MIT `LICENSE` and synchronize package,
       lockfile, boundary, and README metadata.
-- [ ] Confirm that the repository host detects MIT at the top/About area after
+- [x] Confirm that the repository host detects MIT at the top/About area after
       publication.
-- [ ] Confirm the repository contains all required source, assets, setup, run,
+- [x] Confirm the repository contains all required source, assets, setup, run,
       test, and deployment instructions.
-- [ ] Update the root README so it no longer says Gate 0 is pending.
+- [x] Update the root README so it no longer says Gate 0 is pending.
 - [x] Update the root README with the live URL, architecture summary, WebMCP
       tool list, testing instructions, provenance, and public demo link slot.
-- [ ] Run the repository's focused verification commands on the exact release
+- [x] Run the repository's focused verification commands on the exact release
       revision.
-- [ ] Entrant reviews the complete repository while it is still private.
-- [ ] Entrant manually changes repository visibility to public.
-- [ ] Replace `<PUBLIC_REPOSITORY_URL>` and verify anonymous read access.
+- [x] Entrant reviews the complete repository while it is still private.
+- [x] Entrant manually changes repository visibility to public.
+- [x] Bind https://github.com/NSPbuilder/savs-webmcp-challenge and verify
+      anonymous read access.
 
 Evidence: public URL, visible license, anonymous clone/read check, exact release
 revision, and focused verification output.
@@ -127,7 +128,7 @@ confirmation.
 ## Gate 7 — Final submission rehearsal
 
 - [ ] Reverify the official rules and deadline against the live pages.
-- [ ] Rerun `node scripts/check-submission-materials.mjs --mode=final` after
+- [x] Rerun `node scripts/check-submission-materials.mjs --mode=final` after
       the public repository and YouTube URL placeholders have been replaced.
 - [ ] Reopen all three external URLs in an anonymous context.
 - [ ] Run one final public-origin ChatGPT or Chrome WebMCP smoke test.
