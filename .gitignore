@@ -3,5 +3,6 @@ node_modules/
 dist/
 artifacts/
 test-results/
+video-rehearsal/
 .DS_Store
 *.log

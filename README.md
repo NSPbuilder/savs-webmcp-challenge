@@ -1,18 +1,62 @@
-# SAVS WebMCP Challenge
+# SAVS: Visual Proof for WebMCP Agents
 
-This private reference implementation demonstrates one precise idea: a structured browser action can
-succeed while the resulting interface still contains a human-visible optical defect. Visual evidence
-must be bound to the exact revision it inspected before an agent can use it as a completion claim.
+**A successful tool call is not a visual verdict.**
 
-The local flow starts from approved revision R0, applies a compact-layout action to create defective
-R1, runs a controlled reference/current raster comparison, refuses to let stale R1 evidence certify a
-newer revision, applies one allowlisted alignment repair to create R2, and requires a fresh zero-diff
-audit before reporting PASS.
+SAVS is a self-contained WebMCP reference implementation that gives agents
+revision-bound evidence about human-visible results. A valid compact-layout
+action succeeds and creates R1, but a subtle two-CSS-pixel baseline defect
+causes a fresh visual audit to return `BLOCK`. A constrained repair creates
+R2; the old R1 evidence remains stale and blocked, and only a fresh R2 audit
+returns `PASS`.
 
-## Local use
+- Live workbench: https://savs-webmcp-challenge.onrender.com
+- Demo video: https://youtu.be/quJI1JD3FzE
+- Challenge application materials: [`submission/`](submission/)
 
-Requirements: Node.js 20 or newer, a Chromium browser installed by Playwright, and Google Chrome 149
-or newer for the native WebMCP verification boundary.
+## Why WebMCP matters here
+
+The page registers four native tools through
+`document.modelContext.registerTool`:
+
+- `get_visual_state` reads the current immutable revision and audit state;
+- `apply_compact_layout` creates the deliberately defective R1 revision;
+- `run_visual_audit` audits an explicitly requested revision and reports
+  evidence freshness;
+- `apply_alignment_repair` creates a successor revision using an allowlisted
+  repair and an expected-revision precondition.
+
+The tools are semantic capabilities, not wrappers around screen coordinates.
+The visible controls use the same application endpoints, so the person and
+agent share the same state, history, evidence, and verdicts.
+
+## Demonstrated flow
+
+1. Start from approved reference R0.
+2. Invoke `apply_compact_layout`; the action succeeds and creates R1.
+3. Audit R1; a target-only pixel difference produces fresh `BLOCK`.
+4. Invoke `apply_alignment_repair` with `expectedRevisionId: "R1"`; it creates
+   immutable successor R2.
+5. Observe that R1 evidence is stale and remains `BLOCK`.
+6. Audit R2; a fresh zero-difference result produces `PASS`.
+
+The exact changed-pixel count can vary by rendering environment. The product
+invariant is a non-zero, target-only R1 difference with protected regions
+unchanged, followed by a fresh zero-difference R2 result.
+
+## Architecture
+
+- A Node.js server maintains isolated sessions, immutable revisions,
+  idempotency receipts, and audit records.
+- The browser renders the workbench and registers the four WebMCP tools.
+- A controlled renderer produces approved-reference and candidate PNGs.
+- The verifier checks exact pixels, a stable control region, the permitted
+  target region, and revision freshness.
+- The app has no runtime import from the private `nsp-savs` research project.
+
+## Run locally
+
+Requirements: Node.js 20 or newer, a Playwright Chromium installation, and
+Google Chrome 149 or newer for the native WebMCP verification boundary.
 
 ```sh
 npm install
@@ -20,44 +64,54 @@ npx playwright install chromium
 npm start
 ```
 
-Open `http://127.0.0.1:4173`. The visible controls and the four imperative WebMCP tools use the same
-application endpoints.
+Open `http://127.0.0.1:4173`.
 
-## Verification
+## Verify
 
 ```sh
 npm run verify
 ```
 
-The command performs syntax and dependency-boundary checks, unit/API/browser tests, a native Google
-Chrome run of the current `document.modelContext.registerTool/getTools/executeTool` API with the local
-WebMCP test feature enabled, and generation of an image-rich local proof report at
-`artifacts/local-proof/index.html`.
+This runs syntax and dependency-boundary checks, unit/API/browser tests, a
+native Chrome WebMCP compatibility run, and an image-rich local proof report.
 
-## Private CI container Gate 0
-
-The candidate image is pinned to the Playwright 1.62.1 Noble multi-platform index and contains only
-the package manifests plus `app`, `lib`, `verifier`, and `server.mjs`. Gate 0 runs only when a
-maintainer manually dispatches the private `Gate 0 container proof` workflow on `main`; it is not a
-push, pull-request, scheduled, deployment, registry, or publication workflow.
+To verify the public deployment independently:
 
 ```sh
-gh workflow run gate0-container-proof.yml --ref main
+TARGET_ORIGIN=https://savs-webmcp-challenge.onrender.com npm run verify:deployment
 ```
 
-The standard Ubuntu job builds the exact Dockerfile, runs the candidate container, invokes
-`verify:deployment` through its mapped origin, measures the observed image/runtime, audit latency and
-cgroup peak memory, checks that Chromium closes, then stops and removes the container. Its only
-upload candidate is a source-bound `receipt.json` capped at 1 MiB and retained for one day.
+## Test the native WebMCP tools manually
 
-`verify:deployment` checks two independent page sessions, the complete R1 BLOCK → stale → R2 PASS
-chain, PNG evidence, two concurrently issued audits, and the visible controls without WebMCP. A CI
-receipt proves only that exact private commit and runner; the later public HTTPS origin must pass the
-same verifier independently.
+1. Use Chrome 149 or later.
+2. Enable `chrome://flags/#enable-webmcp-testing` and restart Chrome.
+3. Open the local or public workbench.
+4. Discover the four registered tools and invoke the R0→R1→R2 sequence above.
 
-## Current boundary
+No account or credential is required for the public workbench.
 
-This repository is private and `UNLICENSED` while it is under review. It is not yet a hosted demo,
-public Challenge entry, ChatGPT in-app-browser result, video, or submission. It contains no runtime
-import from the private `nsp-savs` project. The candidate container definition and manual workflow
-are present, but Gate 0 remains pending until the real private Linux receipt passes.
+## Challenge-period provenance
+
+SAVS began as pre-existing visual-verification research. During the WebMCP
+Challenge period, this standalone repository added the page-registered
+four-tool interface, immutable revision workflow, freshness-bound verdicts,
+constrained repair, native browser verification, public deployment, and demo.
+See [`submission/challenge-period-provenance.md`](submission/challenge-period-provenance.md)
+for the bounded distinction between the prior research and this entry.
+
+## Evidence boundary
+
+The exact Gate 0 implementation revision passed on a GitHub-hosted Ubuntu 24
+Linux runner. The same R1 fresh `BLOCK` → R1 stale `BLOCK` → R2 fresh `PASS`
+chain passed against the public Render origin. The accepted 157.12-second v4
+video has passed complete human playback and is publicly listed at
+https://youtu.be/quJI1JD3FzE. Complete signed-out playback after YouTube's
+transcode remains the final video-publication check.
+
+The first-party source is licensed under the MIT License, copyright (c) 2026
+NSP AI LABS INC.; see [`LICENSE`](LICENSE). Repository visibility and Devpost
+submission are separate external gates controlled by the entrant.
+
+## License
+
+MIT © 2026 NSP AI LABS INC.

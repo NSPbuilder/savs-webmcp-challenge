@@ -2,7 +2,7 @@
   "name": "@nspbuilder/savs-webmcp-challenge",
   "version": "0.1.0",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "description": "A self-contained WebMCP reference that proves visual evidence belongs to an exact UI revision.",
   "engines": {

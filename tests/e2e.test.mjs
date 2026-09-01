@@ -44,6 +44,33 @@ async function execute(page, name, args) {
   );
 }
 
+async function waitingFocusEvidence(page, expectedRevisionId) {
+  return page.locator('[data-live-specimen]').evaluate((frame, expectedRevision) => {
+    const main = frame.contentDocument?.querySelector('main[data-revision]');
+    const observedRevision = main?.dataset.revision || null;
+    const targets = [...(frame.contentDocument?.querySelectorAll('[data-audit-target]') || [])];
+    const frameBox = frame.getBoundingClientRect();
+    const fractions = [0.2, 0.5, 0.8];
+    const samples = targets.flatMap((target) => {
+      const targetBox = target.getBoundingClientRect();
+      return fractions.flatMap((yFraction) => fractions.map((xFraction) => {
+        const x = frameBox.left + frame.clientLeft + targetBox.left + (targetBox.width * xFraction);
+        const y = frameBox.top + frame.clientTop + targetBox.top + (targetBox.height * yFraction);
+        return { x, y, frontmost: document.elementFromPoint(x, y) === frame };
+      }));
+    });
+    return {
+      expectedRevision,
+      observedRevision,
+      revisionMatched: observedRevision === expectedRevision,
+      targetCount: targets.length,
+      sampleCount: samples.length,
+      frontmostCount: samples.filter((sample) => sample.frontmost).length,
+      waitingOverlayHidden: document.querySelector('[data-empty-stage]').hidden,
+    };
+  }, expectedRevisionId);
+}
+
 test('top-level imperative WebMCP tools execute the complete visual flow', { timeout: 60_000 }, async (t) => {
   const server = await startServer();
   const browser = await chromium.launch({ headless: true });
@@ -67,7 +94,62 @@ test('top-level imperative WebMCP tools execute the complete visual flow', { tim
   assert.equal(new Set(names).size, 4);
 
   const compact = await execute(page, 'apply_compact_layout', { idempotencyKey: 'webmcp-compact' });
-  assert.equal(JSON.parse(compact.content[0].text).revision.revisionId, 'R1');
+  const compactRevisionId = JSON.parse(compact.content[0].text).revision.revisionId;
+  assert.equal(compactRevisionId, 'R1');
+  await page.waitForFunction((revisionId) => {
+    const frame = document.querySelector('[data-live-specimen]');
+    return frame.contentDocument?.querySelector('main[data-revision]')?.dataset.revision === revisionId
+      && document.querySelector('[data-empty-stage]').hidden;
+  }, compactRevisionId);
+  assert.deepEqual(await waitingFocusEvidence(page, compactRevisionId), {
+    expectedRevision: 'R1',
+    observedRevision: 'R1',
+    revisionMatched: true,
+    targetCount: 2,
+    sampleCount: 18,
+    frontmostCount: 18,
+    waitingOverlayHidden: true,
+  });
+
+  await page.locator('[data-live-specimen]').evaluate((frame) => {
+    frame.contentDocument.querySelector('main').dataset.revision = 'R0';
+    frame.dispatchEvent(new Event('load'));
+  });
+  assert.deepEqual(await waitingFocusEvidence(page, compactRevisionId), {
+    expectedRevision: 'R1',
+    observedRevision: 'R0',
+    revisionMatched: false,
+    targetCount: 2,
+    sampleCount: 18,
+    frontmostCount: 0,
+    waitingOverlayHidden: false,
+  });
+
+  await page.locator('[data-live-specimen]').evaluate((frame) => {
+    frame.contentDocument.querySelector('main').dataset.revision = 'R1';
+    frame.dispatchEvent(new Event('load'));
+  });
+  assert.equal((await waitingFocusEvidence(page, compactRevisionId)).frontmostCount, 18);
+
+  await page.locator('[data-live-specimen]').evaluate((frame) => {
+    frame.contentDocument.querySelector('main').removeAttribute('data-revision');
+    frame.dispatchEvent(new Event('load'));
+  });
+  assert.deepEqual(await waitingFocusEvidence(page, compactRevisionId), {
+    expectedRevision: 'R1',
+    observedRevision: null,
+    revisionMatched: false,
+    targetCount: 2,
+    sampleCount: 18,
+    frontmostCount: 0,
+    waitingOverlayHidden: false,
+  });
+
+  await page.locator('[data-live-specimen]').evaluate((frame) => {
+    frame.contentDocument.querySelector('main').dataset.revision = 'R1';
+    frame.dispatchEvent(new Event('load'));
+  });
+  assert.equal((await waitingFocusEvidence(page, compactRevisionId)).frontmostCount, 18);
   const r1Audit = await execute(page, 'run_visual_audit', { revisionId: 'R1', auditId: 'webmcp-r1' });
   const r1 = JSON.parse(r1Audit.content[0].text);
   assert.equal(r1.verdict, 'BLOCK');

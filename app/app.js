@@ -73,6 +73,16 @@ function specimenUrl(revisionId) {
   return `/specimen?${query}`;
 }
 
+function loadedSpecimenRevision() {
+  try {
+    return elements.liveSpecimen.contentDocument
+      ?.querySelector('main[data-revision]')
+      ?.dataset.revision || null;
+  } catch {
+    return null;
+  }
+}
+
 function renderTrace() {
   const auditRevision = state.audit?.auditedRevisionId;
   elements.trace.replaceChildren(
@@ -112,7 +122,7 @@ function renderAudit() {
       elements.freshness,
     ]) element.textContent = '—';
     elements.comparisonStack.hidden = true;
-    elements.emptyStage.hidden = false;
+    elements.emptyStage.hidden = loadedSpecimenRevision() === state.application?.currentRevisionId;
     elements.diffStrip.hidden = true;
     elements.blink.disabled = true;
     elements.liveSpecimen.hidden = false;
@@ -141,7 +151,10 @@ function renderAudit() {
 function render() {
   const revisionId = state.application.currentRevisionId;
   elements.currentRevision.textContent = revisionId;
-  elements.liveSpecimen.src = specimenUrl(revisionId);
+  const nextSpecimenUrl = specimenUrl(revisionId);
+  if (elements.liveSpecimen.getAttribute('src') !== nextSpecimenUrl) {
+    elements.liveSpecimen.src = nextSpecimenUrl;
+  }
   renderTrace();
   renderAudit();
 }
@@ -227,6 +240,7 @@ elements.blink.addEventListener('click', () => {
   elements.blink.setAttribute('aria-pressed', String(state.blinking));
   elements.blink.textContent = state.blinking ? 'Stop blinking' : 'Blink compare';
 });
+elements.liveSpecimen.addEventListener('load', renderAudit);
 
 function toolResult(value) {
   return { content: [{ type: 'text', text: JSON.stringify(value) }] };

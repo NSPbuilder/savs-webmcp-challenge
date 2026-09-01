@@ -8,6 +8,8 @@ const SOURCE_ROOTS = ['.github/workflows', 'app', 'lib', 'scripts', 'tests', 've
 const SOURCE_FILES = [
   'server.mjs',
   'package.json',
+  'package-lock.json',
+  'LICENSE',
   'README.md',
   '.gitignore',
   'Dockerfile',
@@ -59,9 +61,53 @@ for (const path of paths) {
 
 const packageValue = JSON.parse(await readFile(join(ROOT, 'package.json'), 'utf8'));
 assert.equal(packageValue.private, true, 'package must remain private');
-assert.equal(packageValue.license, 'UNLICENSED', 'license must remain UNLICENSED');
+assert.equal(packageValue.license, 'MIT', 'package license must be MIT');
 assert.deepEqual(Object.keys(packageValue.dependencies || {}), ['playwright']);
 assert.equal(packageValue.dependencies.playwright, '1.62.1');
+
+const packageLockValue = JSON.parse(await readFile(join(ROOT, 'package-lock.json'), 'utf8'));
+const lockRoot = packageLockValue.packages[''];
+assert.equal(lockRoot.name, packageValue.name, 'root lockfile name must match package metadata');
+assert.equal(lockRoot.version, packageValue.version, 'root lockfile version must match package metadata');
+assert.equal(lockRoot.license, packageValue.license, 'root lockfile license must match package metadata');
+assert.deepEqual(
+  lockRoot.dependencies,
+  packageValue.dependencies,
+  'root lockfile dependencies must match package metadata',
+);
+assert.deepEqual(
+  lockRoot.engines,
+  packageValue.engines,
+  'root lockfile engines must match package metadata',
+);
+
+const expectedMitLicense = `MIT License
+
+Copyright (c) 2026 NSP AI LABS INC.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+`;
+assert.equal(
+  await readFile(join(ROOT, 'LICENSE'), 'utf8'),
+  expectedMitLicense,
+  'LICENSE must contain the authorized standard MIT text',
+);
 
 const dockerfile = await readFile(join(ROOT, 'Dockerfile'), 'utf8');
 assert.match(
@@ -147,6 +193,6 @@ if (findings.length > 0) {
     privateRuntimeImports: 0,
     absoluteWorkspacePaths: 0,
     packagePrivate: true,
-    license: 'UNLICENSED',
+    license: 'MIT',
   }));
 }
